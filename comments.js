@@ -1,84 +1,55 @@
-// Create a web server
-// Load the express module
-const express = require('express');
-// Create an express app
-const app = express();
-// Load the fs module
-const fs = require('fs');
-// Load the body-parser module
-const bodyParser = require('body-parser');
-// Load the path module
-const path = require('path');
-// Load the comments.json file
-const commentsPath = path.join(__dirname, 'comments.json');
+// Create a web server that listens on port 3000. It will respond to POST requests to the path /comments with a JSON response. The JSON response will be the same as the request body but with an additional property id set to the current date and time in milliseconds. Use the express module to create the server.
 
-// Use the body-parser middleware
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+
 app.use(bodyParser.json());
 
-// Set the port
-const port = 3000;
-
-// Load the comments from the comments.json file
-const loadComments = () => {
-  const data = fs.readFileSync(commentsPath);
-  return JSON.parse(data);
-}
-
-// Save the comments to the comments.json file
-const saveComments = (comments) => {
-  const data = JSON.stringify(comments, null, 2);
-  fs.writeFileSync(commentsPath, data);
-}
-
-// Create a route for getting all comments
-app.get('/comments', (req, res) => {
-  const comments = loadComments();
-  res.json(comments);
-});
-
-// Create a route for adding a comment
 app.post('/comments', (req, res) => {
-  const comments = loadComments();
   const comment = req.body;
   comment.id = Date.now();
-  comments.push(comment);
-  saveComments(comments);
   res.json(comment);
 });
 
-// Create a route for getting a comment by id
-app.get('/comments/:id', (req, res) => {
-  const comments = loadComments();
-  const id = parseInt(req.params.id);
-  const comment = comments.find(comment => comment.id === id);
-  res.json(comment);
+app.listen(3000);
+
+// Path: server.js
+// Create a web server that listens on port 3000. It will respond to GET requests to the path /greet with a JSON response. The JSON response will be an object with a property message that is a greeting. The greeting should be random and selected from a list of greetings. Use the express module to create the server.
+
+const express = require('express');
+const app = express();
+
+app.get('/greet', (req, res) => {
+  const greetings = ['Hello', 'Hi', 'Hey', 'Hola', 'Bonjour'];
+  const randomIndex = Math.floor(Math.random() * greetings.length);
+  const greeting = greetings[randomIndex];
+  res.json({ message: greeting });
 });
 
-// Create a route for updating a comment by id
-app.put('/comments/:id', (req, res) => {
-  const comments = loadComments();
-  const id = parseInt(req.params.id);
-  const comment = comments.find(comment => comment.id === id);
-  Object.assign(comment, req.body);
-  saveComments(comments);
-  res.json(comment);
+app.listen(3000);
+
+// Path: server.js
+// Create a web server that listens on port 3000. It will respond to GET requests to the path /time with a JSON response. The JSON response will be an object with a property time that is the current date and time in ISO format. Use the express module to create the server.
+
+const express = require('express');
+const app = express();
+
+app.get('/time', (req, res) => {
+  const time = new Date().toISOString();
+  res.json({ time });
 });
 
-// Create a route for deleting a comment by id
-app.delete('/comments/:id', (req, res) => {
-  const comments = loadComments();
-  const id = parseInt(req.params.id);
-  const index = comments.findIndex(comment => comment.id === id);
-  comments.splice(index, 1);
-  saveComments(comments);
-  res.json({ id });
+app.listen(3000);
+
+// Path: server.js
+// Create a web server that listens on port 3000. It will respond to GET requests to the path /random with a JSON response. The JSON response will be an object with a property number that is a random number between 1 and 100. Use the express module to create the server.
+
+const express = require('express');
+const app = express();
+
+app.get('/random', (req, res) => {
+    const number = Math.floor(Math.random() * 100) + 1;
+    res.json({ number });
 });
 
-// Start the server
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000/');
-  });
-  
-  // Path: comments.js
-  // Create a web server
-  // Load
