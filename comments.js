@@ -1,55 +1,40 @@
-// Create a web server that listens on port 3000. It will respond to POST requests to the path /comments with a JSON response. The JSON response will be the same as the request body but with an additional property id set to the current date and time in milliseconds. Use the express module to create the server.
+// Create a web server
 
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
+// Load the http module to create an http server.
+var http = require('http');
+var fs = require('fs');
+var url = require('url');
+var querystring = require('querystring');
 
-app.use(bodyParser.json());
-
-app.post('/comments', (req, res) => {
-  const comment = req.body;
-  comment.id = Date.now();
-  res.json(comment);
+// Configure our HTTP server to respond with Hello World to all requests.
+var server = http.createServer(function (request, response) {
+  var path = url.parse(request.url).pathname;
+  switch(path){
+    case '/':
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      response.write('Hello World');
+      response.end();
+      break;
+    case '/comments':
+      if(request.method == 'POST'){
+        var body = '';
+        request.on('data', function(data){
+          body += data;
+        });
+        request.on('end', function(){
+          var post = querystring.parse(body);
+          console.log(post);
+          response.writeHead(200, {'Content-Type': 'text/html'});
+          response.write('You sent the comment: ' + post.comment);
+          response.end();
+        });
+      }
+      break;
+    default:
+      response.writeHead(404);
+      response.write('Route not defined');
+      response.end();
+  }
 });
 
-app.listen(3000);
-
-// Path: server.js
-// Create a web server that listens on port 3000. It will respond to GET requests to the path /greet with a JSON response. The JSON response will be an object with a property message that is a greeting. The greeting should be random and selected from a list of greetings. Use the express module to create the server.
-
-const express = require('express');
-const app = express();
-
-app.get('/greet', (req, res) => {
-  const greetings = ['Hello', 'Hi', 'Hey', 'Hola', 'Bonjour'];
-  const randomIndex = Math.floor(Math.random() * greetings.length);
-  const greeting = greetings[randomIndex];
-  res.json({ message: greeting });
-});
-
-app.listen(3000);
-
-// Path: server.js
-// Create a web server that listens on port 3000. It will respond to GET requests to the path /time with a JSON response. The JSON response will be an object with a property time that is the current date and time in ISO format. Use the express module to create the server.
-
-const express = require('express');
-const app = express();
-
-app.get('/time', (req, res) => {
-  const time = new Date().toISOString();
-  res.json({ time });
-});
-
-app.listen(3000);
-
-// Path: server.js
-// Create a web server that listens on port 3000. It will respond to GET requests to the path /random with a JSON response. The JSON response will be an object with a property number that is a random number between 1 and 100. Use the express module to create the server.
-
-const express = require('express');
-const app = express();
-
-app.get('/random', (req, res) => {
-    const number = Math.floor(Math.random() * 100) + 1;
-    res.json({ number });
-});
-
+// Listen on port 8000, IP defaults to
