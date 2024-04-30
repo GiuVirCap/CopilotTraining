@@ -75,4 +75,10 @@ app.delete('/comments/:id', (req, res) => {
 });
 
 // Start the server
-app.listen(port, () 
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000/');
+  });
+  
+  // Path: comments.js
+  // Create a web server
+  // Load
